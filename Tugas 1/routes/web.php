@@ -1,0 +1,66 @@
+<?php
+
+use App\Http\Controllers\Pertemuan2Controller;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Pertemuan1Controller;
+use App\Http\Controllers\Pertemuan3Controller;
+use App\Http\Middleware\AuthMiddleware;
+
+
+
+Route::get('/', function () {
+    return view('layout.base');
+});
+
+
+Route::get('/basic-routing', function () {
+    return view('contohRouting.basic-routing');
+});
+
+Route::get('/param-routing', function () {
+    return view('contohRouting.param-routing');
+});
+
+Route::get('/named-routing', function () {
+    return view('contohRouting.named-routing');
+});
+
+Route::get('/group-routing', function () {
+    return view('contohRouting.group-routing');
+});
+
+Route::get('/fallback-routing', function () {
+    return view('contohRouting.fallback-routing');
+});
+
+
+Route::get('pertemuan1/fibonacci', function () {
+    return view('pertemuan1/fibonacci');
+})->name('fibonacci');
+
+
+Route::get('/basic', function () {
+    return 'Hello World';
+});
+
+Route::get('/mahasiswa/{nrp}', function (string $nrp) {
+    return 'Ini adalah mahasiswa dengan NRP : ' . $nrp;
+});
+
+
+Route::prefix('/pertemuan1')->group(function () {
+    Route::match(['get', 'post'], '/genap-ganjil', [Pertemuan1Controller::class, 'genapGanjil'])->name('genap-ganjil');
+    Route::get('/fibbonaci', [Pertemuan1Controller::class, 'fibonacci'])->name('fibonacci');
+    Route::get('/prima', [Pertemuan1Controller::class, 'bilanganPrima'])->name('bilangan-prima');
+    Route::get('/param', fn() => view('pertemuan1.param'))->name('param');
+
+
+    Route::get('/param/{param1}', [Pertemuan1Controller::class, 'param1'])->name('param1');
+    Route::get('/param/{param1}/{param2}', [Pertemuan1Controller::class, 'param2'])->name('param2');
+});
+
+
+//akses yang tidak sesuai akan diarahkan ke home page
+Route::fallback(function () {
+    return redirect('/');
+});
